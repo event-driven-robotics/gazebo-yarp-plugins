@@ -27,7 +27,13 @@
 
 typedef std::unordered_map<std::string, gazebo::physics::LinkPtr> linksMap;
 
+// new:
+// typedef std::unordered_map<std::string, gazebo::sensors::ContactSensorPtr> sensorsMap;
+
 enum class linkNumberEnum;
+
+// new:
+// enum class sensorNumberEnum;
 
 struct ContactSensor
 {
@@ -42,6 +48,9 @@ struct ContactSensor
     // the output of the skinManager
     iCub::skinDynLib::BodyPart bodyPart;
     linkNumberEnum linkNumber;
+    // new:
+    // sensorNumberEnum sensorNumber;
+
     iCub::skinDynLib::SkinPart skinPart;
 
     // In this simplificative simulation
@@ -56,6 +65,12 @@ enum class linkNumberEnum {
     // Only finger tips are considered in this implementation    
     HAND = 6
 };
+
+// new:
+// enum class sensorNumberEnum {
+    // 12 taxels per finger tip
+    // SENSOR = 12
+// };
 
 namespace gazebo
 {
@@ -147,10 +162,24 @@ namespace gazebo
 	 */
 	std::unordered_map<std::string, gazebo::physics::LinkPtr> m_linksMap;
 
+        // New:
+        /**
+         * Map between sensors local names and gazebo::sensors::ContactSensorPtr(s)
+         */
+        // std::unordered_map<std::string, gazebo::sensors::ContactSensorPtr> m_sensorsMap;
+        // End
+
 	/**
 	 * String indicating which hand is considered, left or right
 	 */
 	std::string m_whichHand;
+
+        // New:
+        /**
+         * String indicating which link is considered, i, m, r, l, t
+         */
+        // std::string m_whichLink;
+        // End
 
 	/**
 	 * Name of the robot
@@ -207,12 +236,13 @@ namespace gazebo
 	 * A local name is supposed to be unique within the model.
 	 */
 	bool RetrieveLinksFromLocalNames(const std::vector<std::string> &linksLocalNames,
-					 linksMap &map);
+                                         linksMap &map);
+
 	/**
 	 * Configure the gazebo contact sensor corresponding to the link
 	 * with local name linkLocalName.
 	 */	
-	bool ConfigureGazeboContactSensor(const std::string &linkLocalName,
+        bool ConfigureGazeboContactSensor(const std::string &linkLocalName,
 					  ContactSensor &sensor);
 	/**
 	 * Configure all the contacts sensors attached to the links

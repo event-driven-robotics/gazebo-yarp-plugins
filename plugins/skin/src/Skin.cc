@@ -59,6 +59,7 @@ void GazeboYarpSkin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr _sd
     // Store pointer to the model
     m_model = _parent;
 
+
     // Store point to the SDF associated to the model
     m_sdf = _sdf;
     
@@ -84,6 +85,7 @@ void GazeboYarpSkin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr _sd
 		 << "configuration parameter 'whichHand' not found.";
         return;
     }
+
     m_whichHand = whichHandValue.asString();
 
     // Get robot name from the SDF
@@ -150,6 +152,8 @@ void GazeboYarpSkin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr _sd
 	return;
     }
 
+
+
     // Set default value
     m_robotRootFrameReceived = false;
     
@@ -200,15 +204,15 @@ bool GazeboYarpSkin::RetrieveLinksFromLocalNames(const std::vector<std::string> 
 {
     // Get all the links within the robot
     const gazebo::physics::Link_V &links = m_model->GetLinks();
-    
+
     // Search for the given links
     // Lots of redundancy here, room for improvements...
     //
     for (size_t i=0; i<links.size(); i++)
     {
 	// Get the scoped name of the current link
-	std::string currentLinkScopedName = links[i]->GetScopedName();
-	
+        std::string currentLinkScopedName = links[i]->GetScopedName();
+
 	for (size_t j=0; j<linksLocalNames.size(); j++)
 	{
 	    // Check if the ending of the name of the current link corresponds to
@@ -217,10 +221,10 @@ bool GazeboYarpSkin::RetrieveLinksFromLocalNames(const std::vector<std::string> 
 	    if (GazeboYarpPlugins::hasEnding(currentLinkScopedName, linkNameScopedEnding))
 	    {
 		// Store the link into the map
-		map[linksLocalNames[j]] = links[i];
+                map[linksLocalNames[j]] = links[i];
 
-		break;
-	    }
+                break;
+            }
 	}
     }
 
@@ -237,18 +241,19 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
     // Retrieve the link
     sensor.parentLink = m_linksMap[linkLocalName];
     if (sensor.parentLink == NULL)
-	return false;
-    
+        return false;
+
     // Check if this link contains any sensor
     size_t nSensors = sensor.parentLink->GetSensorCount();
     if (nSensors <= 0)
-	return false;
-    
+        return false;
+
     // One contact sensor per link is expected
     // however many sensors can be attached to the same link
     // hence it is required to search for the contact sensor
     sdf::ElementPtr modelSdf = sensor.parentLink->GetSDF();
     sdf::ElementPtr child;
+
     bool foundContactSensor = false;
     for (child = modelSdf->GetElement("sensor");
 	 child != sdf::ElementPtr(nullptr);
@@ -259,9 +264,12 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
 	    // check if a child "contact" tag exists since it is not required
 	    // by default
 	    if (child->HasElement("contact"))
-	    {
-		foundContactSensor = true;
-		break;
+            {
+
+                foundContactSensor = true;
+                break;
+
+
 	    }
 	}
     }
@@ -272,8 +280,8 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
     std::string localSensorName = child->GetAttribute("name")->GetAsString();
     std::vector<std::string> scopedNameList = m_model->SensorScopedName(localSensorName);
     sensor.sensorName = std::accumulate(std::begin(scopedNameList),
-					std::end(scopedNameList),
-					sensor.sensorName);
+                                        std::end(scopedNameList),
+                                        sensor.sensorName);
     // Extract collision name
     sdf::ElementPtr contact = child->GetElement("contact");
     sensor.collisionName = contact->GetElement("collision")->GetValue()->GetAsString();
@@ -281,16 +289,18 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
     // Get the sensor from the sensor manager
     gazebo::sensors::SensorManager *sensorMgr = gazebo::sensors::SensorManager::Instance();
     if (!sensorMgr->SensorsInitialized())
-	return false;
+        return false;
+
     gazebo::sensors::SensorPtr genericPtr = sensorMgr->GetSensor(sensor.sensorName);
     sensor.sensor = std::dynamic_pointer_cast<gazebo::sensors::ContactSensor>(genericPtr);
     if (sensor.sensor == nullptr)
-	return false;
+        return false;
 
     // Activate sensor
     sensor.sensor->SetActive(true);
 
     return true;
+
 }
 
 bool GazeboYarpSkin::ConfigureAllContactSensors()
@@ -299,12 +309,13 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
     iCub::skinDynLib::BodyPart bodyPart;
     iCub::skinDynLib::SkinPart skinPart;
     linkNumberEnum linkNumber = linkNumberEnum::HAND;
+
     if (m_whichHand == "right")
     {
 	bodyPart = iCub::skinDynLib::BodyPart::RIGHT_ARM;
 	skinPart = iCub::skinDynLib::SkinPart::SKIN_RIGHT_HAND;
     }
-    else
+
     {
 	bodyPart = iCub::skinDynLib::BodyPart::LEFT_ARM;
 	skinPart = iCub::skinDynLib::SkinPart::SKIN_LEFT_HAND;
@@ -318,6 +329,7 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 		 << "configuration parameter 'linkNames' not found.";
         return false;
     }
+
     int numberOfLinks = linksLocalNamesBottle.size()-1;
     for (size_t i=0; i<numberOfLinks; i++)
 	linksLocalNames.push_back(linksLocalNamesBottle.get(i+1).asString().c_str());
@@ -330,8 +342,9 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 		 << "configuration parameter 'taxelIds' not found.";
         return false;
     }
+
     for (size_t i=0; i<numberOfLinks; i++)
-	taxelIds.push_back(taxelIdsBottle.get(i+1).asInt());
+        taxelIds.push_back(taxelIdsBottle.get((i+1)).asInt());
 
     // Retrieve the links from the model
     RetrieveLinksFromLocalNames(linksLocalNames, m_linksMap);
@@ -357,17 +370,19 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 		     << "cannot configure link"
 		     << linkLocalName;
 	    return false;
-	}
+        }
 
 	// Add sensor to the list
-	m_contactSensors.push_back(sensor);
+        m_contactSensors.push_back(sensor);
     }
 
     return true;
 }
-	
+
 void GazeboYarpSkin::OnWorldUpdate()
 {
+    // gazebo::physics::ModelPtr _parent
+
     // The first time this is executed and
     // until m_robotRootFrameReceived is true
     // the transform between m_robotSourceFrameName
@@ -403,11 +418,120 @@ void GazeboYarpSkin::OnWorldUpdate()
 	    {
 		
 		// Extract position from message
-		auto position = contacts.contact(j).position(k);
+                auto position = contacts.contact(j).position(k);
 
-		// Convert to a pose with no rotation
+                // Convert to a pose with no rotation
 		ignition::math::Pose3d point(position.x(), position.y(), position.z(),
-					     0, 0, 0);
+                                             0, 0, 0);
+
+                /*
+                // Find the vector from the fingertip to the contact point
+                // expressed in the coordinates of the fingertip
+                // ignition::math::Pose3d
+                // std::string gazeboLinkName = gazeboModelLinks[gazeboLink]->GetScopedName();
+                // ignition::math::Pose3d tmp = gazeboLinkName->GetInertial().get()->pose().Pos();
+
+                // set up parameters (exclude to the top, that they are only calculated once!)
+                double r = 0.007;                 // 7mm
+                double xoff = 0.005               // 5mm offset to the link frame
+                double x1 = 0.0055+xoff;          // 5.5mm
+                double x2 = 0.011+xoff;           // 11mm
+                double x3 = r*cos(22.5*pi/180);   // in mm and deg -> express as rad
+                double ymax = r*sin(18*pi/180);   // in mm and deg -> express as rad
+                double y1 = r*sin(54*pi/180);     // in mm and deg -> express as rad
+                double ymin = r;                  // in mm
+                double ytop = r*sin(22.5*pi/180); // in mm and deg -> express as rad
+
+                if (m_whichHand == "right")
+                {
+                    // calculate taxel IDs 1, 2 & 12:
+                    if (xoff < position.x() < x1)
+                    {
+                        if (y1 < position.y() < ymax)
+                        {
+                            if (0 < position.z())
+                            {
+                                // no ID!
+                            }
+                            else
+                            {
+                                taxelId = 1;
+                            }
+                        }
+                        else if (ymin < position.y() < y1)
+                        {
+                            if (0 < position.z())
+                            {
+                                taxelId = 12;
+                            }
+                            else
+                            {
+                                taxelId = 2;
+                            }
+                        }
+                    }
+                    // calculate taxel IDs 3, 4, 10 & 11:
+                    else if (x1 < position.x() < x2)
+                    {
+                        if (y1 < position.y() < ymax)
+                        {
+                            if (0 < position.z())
+                            {
+                                taxelId = 11;
+                            }
+                            else
+                            {
+                                taxelId = 3;
+                            }
+                        }
+                        else if (ymin < position.y() < y1)
+                        {
+                            if (0 < position.z())
+                            {
+                                taxelId = 10;
+                            }
+                            else
+                            {
+                                taxelId = 4;
+                            }
+                        }
+                    }
+                    // calculate taxel IDs 5, 6, 8 & 9:
+                    else if (x2 < position.x() < x3)
+                    {
+                        if (y1 < position.y() < ymax)
+                        {
+                            if (0 < position.z())
+                            {
+                                taxelId = 9;
+                            }
+                            else
+                            {
+                                taxelId = 5;
+                            }
+                        }
+                        else if (ymin < position.y() < y1)
+                        {
+                            if (0 < position.z())
+                            {
+                                taxelId = 8;
+                            }
+                            else
+                            {
+                                taxelId = 6;
+                            }
+                    }
+                    // calculate taxel ID 7:
+                    else if (x3 < position.x() & -ytop < position.y() < ytop )
+                    {
+                        taxelID = 7;
+                    }
+                }
+                else
+                {
+                    // figure out set up for left hand!!!
+                }
+                */
 
 		// Find the vector from the center of the root frame of the robot
 		// to the contact points expressed in the root frame of the robot
@@ -417,9 +541,28 @@ void GazeboYarpSkin::OnWorldUpdate()
 		// in this implementation
 		ignition::math::Vector3d & diffPos = diff.Pos();
 		yarp::sig::Vector diffVector(3, 0.0);
-		diffVector[0] = diffPos.X();
-		diffVector[1] = diffPos.Y();
-		diffVector[2] = diffPos.Z();
+                diffVector[0] = diffPos.X();
+                diffVector[1] = diffPos.Y();
+                diffVector[2] = diffPos.Z();
+
+                // new
+                //diffVector[0] = position.x();
+                //diffVector[1] = position.y();
+                //diffVector[2] = position.z();
+		
+		// normal
+		yarp::sig::Vector normVector(3,0.0);
+		normVector[0] = contacts.contact(j).normal(k).x();
+		normVector[1] = contacts.contact(j).normal(k).y();
+		normVector[2] = contacts.contact(j).normal(k).z();
+		
+		// force
+		const gazebo::msgs::JointWrench& wrench = contacts.contact(j).wrench(k);
+		yarp::sig::Vector forceVector(3,0.0);
+
+		forceVector[0] = wrench.body_1_wrench().force().x();
+		forceVector[1] = wrench.body_1_wrench().force().y();
+		forceVector[2] = wrench.body_1_wrench().force().z();
 
 		// Add noise if required
 		if (m_noiseEnabled) {
@@ -433,7 +576,9 @@ void GazeboYarpSkin::OnWorldUpdate()
 							yarp::sig::Vector(3,0.0));
 		iCub::skinDynLib::skinContact skinContact(dynContact);
 		skinContact.setSkinPart(sensor.skinPart);
-		skinContact.setGeoCenter(diffVector);
+                skinContact.setGeoCenter(diffVector);
+		skinContact.setNormalDir(normVector);
+		skinContact.setForce(forceVector);
 
 		// Suppose each contact is due to one taxel only
 		skinContact.setActiveTaxels(1);
