@@ -161,25 +161,13 @@ namespace gazebo
 	 * Map between links local names and gazebo::physics::LinkPtr(s)
 	 */
 	std::unordered_map<std::string, gazebo::physics::LinkPtr> m_linksMap;
+    std::vector<std::string> linksLocalNames;
 
-        // New:
-        /**
-         * Map between sensors local names and gazebo::sensors::ContactSensorPtr(s)
-         */
-        // std::unordered_map<std::string, gazebo::sensors::ContactSensorPtr> m_sensorsMap;
-        // End
 
 	/**
 	 * String indicating which hand is considered, left or right
 	 */
 	std::string m_whichHand;
-
-        // New:
-        /**
-         * String indicating which link is considered, i, m, r, l, t
-         */
-        // std::string m_whichLink;
-        // End
 
 	/**
 	 * Name of the robot

@@ -10,6 +10,8 @@
 #include <gazebo/physics/World.hh>
 #include <gazebo/sensors/sensors.hh>
 
+#include <gazebo/physics/physics.hh>
+
 // ignition
 #include <ignition/math/Pose3.hh>
 #include <ignition/math/Vector3.hh>
@@ -245,6 +247,7 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
 
     // Check if this link contains any sensor
     size_t nSensors = sensor.parentLink->GetSensorCount();
+
     if (nSensors <= 0)
         return false;
 
@@ -265,7 +268,6 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
 	    // by default
 	    if (child->HasElement("contact"))
             {
-
                 foundContactSensor = true;
                 break;
 
@@ -323,7 +325,7 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
     
     // Get local link names of the finger tips
     yarp::os::Bottle linksLocalNamesBottle = m_parameters.findGroup("linkNames");
-    std::vector<std::string> linksLocalNames;
+
     if (linksLocalNamesBottle.isNull()) {
         yError() << "GazeboYarpSkin::ConfigureAllContactSensors error:"
 		 << "configuration parameter 'linkNames' not found.";
@@ -417,12 +419,22 @@ void GazeboYarpSkin::OnWorldUpdate()
 	    for (size_t k=0; k<contacts.contact(j).position_size(); k++)
 	    {
 		
-		// Extract position from message
+                // Extract position from message
                 auto position = contacts.contact(j).position(k);
 
                 // Convert to a pose with no rotation
-		ignition::math::Pose3d point(position.x(), position.y(), position.z(),
+                ignition::math::Pose3d point(position.x(), position.y(), position.z(),
                                              0, 0, 0);
+
+
+
+                gazebo::physics::LinkPtr link_name = m_model->GetLink(linksLocalNames[i]);
+                std::cout << "1" << std::endl;
+                ignition::math::Pose3d link_pose = link_name->RelativePose();
+                std::cout << "2" << std::endl;
+                std::cout << link_pose << std::endl;
+                std::cout << "3" << std::endl;
+
 
                 /*
                 // Find the vector from the fingertip to the contact point
