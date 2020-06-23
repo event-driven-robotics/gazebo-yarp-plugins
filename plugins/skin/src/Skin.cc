@@ -384,7 +384,16 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 
 void GazeboYarpSkin::OnWorldUpdate()
 {
-    // gazebo::physics::ModelPtr _parent
+    // get pointer to the link
+    gazebo::physics::LinkPtr link_name_ptr = m_model->GetLink("iCub::iCub::r_hand::" + linksLocalNames[i]);
+    std::cout << "linkName:" << std::endl;
+    std::cout << link_name_ptr << std::endl;
+
+    // get link coordinates
+    ignition::math::Pose3d link_coord;
+    link_coord = link_name_ptr->WorldPose();
+    std::cout << "linkCoordinates:" <<std::endl;
+    std::cout << link_coord << std::endl;
 
     // The first time this is executed and
     // until m_robotRootFrameReceived is true
@@ -427,31 +436,8 @@ void GazeboYarpSkin::OnWorldUpdate()
                 ignition::math::Pose3d point(position.x(), position.y(), position.z(),
                                              0, 0, 0);
 
-
-                /*
-                for (size_t counter=0; counter<linksLocalNames.size(); counter++)
-                {
-                    std::string linkLocalName2;
-                    // Configure Gazebo contact sensor
-                    linkLocalName2 = linksLocalNames[i];
-                    // new
-                    std::cout << linkLocalName2 << std::endl;
-
-                    gazebo::physics::LinkPtr link_name = m_model->GetLink(linksLocalNames[counter]);
-                    std::cout << counter << std::endl;
-                    std::cout << link_name << std::endl;
-                }
-                */
-
-                std::string link_name;
-                link_name = linksLocalNames[i];
-                std::cout << link_name << std::endl;
-                std::cout << "iCub::iCub::r_hand::" + link_name << std::endl;
-
-                gazebo::physics::LinkPtr link_name_ptr = m_model->GetLink("iCub::iCub::r_hand::" + linksLocalNames[i]);
-                std::cout << link_name_ptr << std::endl;
-                link_coord = link_name_ptr->GetPose();
-
+                ignition::math::Pose3d diff_vec = point - link_coord;
+                std::cout << diff_vec << std::endl;
 
 
                 /*
