@@ -363,9 +363,9 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 	sensor.taxelId = taxelIds[i];
 
 	// Configure Gazebo contact sensor
-	linkLocalName = linksLocalNames[i];
+    linkLocalName = linksLocalNames[i];
     // new
-    // std::cout << linkLocalName << std::endl;
+    std::cout << linkLocalName << std::endl;
 
 	ok = ConfigureGazeboContactSensor(linkLocalName, sensor);
 	if (!ok) {
@@ -445,8 +445,14 @@ void GazeboYarpSkin::OnWorldUpdate()
 
                 std::string link_name;
                 link_name = linksLocalNames[i];
-                // gazebo::physics::LinkPtr link_name1 = m_model->GetLink("r_ail3");
                 std::cout << link_name << std::endl;
+                std::cout << "iCub::iCub::r_hand::" + link_name << std::endl;
+
+                gazebo::physics::LinkPtr link_name_ptr = m_model->GetLink("iCub::iCub::r_hand::" + linksLocalNames[i]);
+                std::cout << link_name_ptr << std::endl;
+                link_coord = link_name_ptr->GetPose();
+
+
 
                 /*
                 // Find the vector from the fingertip to the contact point
