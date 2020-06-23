@@ -222,7 +222,7 @@ bool GazeboYarpSkin::RetrieveLinksFromLocalNames(const std::vector<std::string> 
 	    std::string linkNameScopedEnding = "::" + linksLocalNames[j];
 	    if (GazeboYarpPlugins::hasEnding(currentLinkScopedName, linkNameScopedEnding))
 	    {
-		// Store the link into the map
+                // Store the link into the map
                 map[linksLocalNames[j]] = links[i];
 
                 break;
@@ -270,8 +270,6 @@ bool GazeboYarpSkin::ConfigureGazeboContactSensor(const std::string &linkLocalNa
             {
                 foundContactSensor = true;
                 break;
-
-
 	    }
 	}
     }
@@ -366,6 +364,9 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 
 	// Configure Gazebo contact sensor
 	linkLocalName = linksLocalNames[i];
+    // new
+    // std::cout << linkLocalName << std::endl;
+
 	ok = ConfigureGazeboContactSensor(linkLocalName, sensor);
 	if (!ok) {
 	    yError() << "GazeboYarpSkin::ConfigureAllContactSensors error:"
@@ -427,14 +428,25 @@ void GazeboYarpSkin::OnWorldUpdate()
                                              0, 0, 0);
 
 
+                /*
+                for (size_t counter=0; counter<linksLocalNames.size(); counter++)
+                {
+                    std::string linkLocalName2;
+                    // Configure Gazebo contact sensor
+                    linkLocalName2 = linksLocalNames[i];
+                    // new
+                    std::cout << linkLocalName2 << std::endl;
 
-                gazebo::physics::LinkPtr link_name = m_model->GetLink(linksLocalNames[i]);
-                std::cout << "1" << std::endl;
-                ignition::math::Pose3d link_pose = link_name->RelativePose();
-                std::cout << "2" << std::endl;
-                std::cout << link_pose << std::endl;
-                std::cout << "3" << std::endl;
+                    gazebo::physics::LinkPtr link_name = m_model->GetLink(linksLocalNames[counter]);
+                    std::cout << counter << std::endl;
+                    std::cout << link_name << std::endl;
+                }
+                */
 
+                std::string link_name;
+                link_name = linksLocalNames[i];
+                // gazebo::physics::LinkPtr link_name1 = m_model->GetLink("r_ail3");
+                std::cout << link_name << std::endl;
 
                 /*
                 // Find the vector from the fingertip to the contact point
