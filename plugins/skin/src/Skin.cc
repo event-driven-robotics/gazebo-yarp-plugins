@@ -315,7 +315,7 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 	bodyPart = iCub::skinDynLib::BodyPart::RIGHT_ARM;
 	skinPart = iCub::skinDynLib::SkinPart::SKIN_RIGHT_HAND;
     }
-
+    else
     {
 	bodyPart = iCub::skinDynLib::BodyPart::LEFT_ARM;
 	skinPart = iCub::skinDynLib::SkinPart::SKIN_LEFT_HAND;
@@ -384,16 +384,16 @@ bool GazeboYarpSkin::ConfigureAllContactSensors()
 
 void GazeboYarpSkin::OnWorldUpdate()
 {
-    // get pointer to the link
-    gazebo::physics::LinkPtr link_name_ptr = m_model->GetLink("iCub::iCub::r_hand::" + linksLocalNames[i]);
-    std::cout << "linkName:" << std::endl;
-    std::cout << link_name_ptr << std::endl;
-
-    // get link coordinates
-    ignition::math::Pose3d link_coord;
-    link_coord = link_name_ptr->WorldPose();
-    std::cout << "linkCoordinates:" <<std::endl;
-    std::cout << link_coord << std::endl;
+    // set up parameters (exclude to the header file, that they are only set once!)
+    double r = 0.007;                   // 7mm
+    double xoff = 0.005;                // 5mm offset to the link frame
+    double x1 = 0.0055+xoff;            // 5.5mm
+    double x2 = 0.011+xoff;             // 11mm
+    double x3 = r*cos(22.5*M_PI/180);   // in mm and deg -> express as rad
+    double ymax = r*sin(18*M_PI/180);   // in mm and deg -> express as rad
+    double y1 = r*sin(54*M_PI/180);     // in mm and deg -> express as rad
+    double ymin = r;                    // in mm
+    double ytop = r*sin(22.5*M_PI/180); // in mm and deg -> express as rad
 
     // The first time this is executed and
     // until m_robotRootFrameReceived is true
@@ -422,9 +422,30 @@ void GazeboYarpSkin::OnWorldUpdate()
 	if (contacts.contact_size() == 0)
 	    continue;
 
-	// For now consider only contact per each world update
-	// for (size_t j=0; j<contacts.contact_size(); j++)
-	// {
+    // detect which hand is in contact
+    std::string whichHand = m_whichHand;
+    std::string HandName;
+    std::cout << whichHand << std::endl;
+    if (m_whichHand == "right")
+    {
+    HandName = "r_hand";
+    }
+    else
+    {
+    HandName = "l_hand";
+    }
+
+    // get pointer to the link
+    gazebo::physics::LinkPtr link_name_ptr = m_model->GetLink("iCub::iCub::"+ HandName + "::" + linksLocalNames[i]);
+    // std::cout << "linkName:" << std::endl;
+    // std::cout << link_name_ptr << std::endl;
+
+    // get link coordinates by using the pointer to the model
+    ignition::math::Pose3d link_coord;
+    link_coord = link_name_ptr->WorldPose();
+    // std::cout << "linkCoordinates:" <<std::endl;
+    // std::cout << link_coord << std::endl;
+
 	size_t j =0;
 	    for (size_t k=0; k<contacts.contact(j).position_size(); k++)
 	    {
@@ -435,119 +456,106 @@ void GazeboYarpSkin::OnWorldUpdate()
                 // Convert to a pose with no rotation
                 ignition::math::Pose3d point(position.x(), position.y(), position.z(),
                                              0, 0, 0);
+                // std::cout << point << std::endl;
 
-                ignition::math::Pose3d diff_vec = point - link_coord;
-                std::cout << diff_vec << std::endl;
+                // calculate the contact position at the fingertip
+                ignition::math::Pose3d cont_tip = point - link_coord;
+                std::cout << "contact in Link Coordinates Test:" <<std::endl;
+                std::cout << cont_tip << std::endl;
+                std::cout << cont_tip.Pos().X() << std::endl;
 
-
-                /*
-                // Find the vector from the fingertip to the contact point
-                // expressed in the coordinates of the fingertip
-                // ignition::math::Pose3d
-                // std::string gazeboLinkName = gazeboModelLinks[gazeboLink]->GetScopedName();
-                // ignition::math::Pose3d tmp = gazeboLinkName->GetInertial().get()->pose().Pos();
-
-                // set up parameters (exclude to the top, that they are only calculated once!)
-                double r = 0.007;                 // 7mm
-                double xoff = 0.005               // 5mm offset to the link frame
-                double x1 = 0.0055+xoff;          // 5.5mm
-                double x2 = 0.011+xoff;           // 11mm
-                double x3 = r*cos(22.5*pi/180);   // in mm and deg -> express as rad
-                double ymax = r*sin(18*pi/180);   // in mm and deg -> express as rad
-                double y1 = r*sin(54*pi/180);     // in mm and deg -> express as rad
-                double ymin = r;                  // in mm
-                double ytop = r*sin(22.5*pi/180); // in mm and deg -> express as rad
+                int taxelId_tip;
 
                 if (m_whichHand == "right")
                 {
                     // calculate taxel IDs 1, 2 & 12:
-                    if (xoff < position.x() < x1)
+                    if (xoff < cont_tip.Pos().X() < x1)
                     {
-                        if (y1 < position.y() < ymax)
+                        if (y1 < cont_tip.Pos().Y() < ymax)
                         {
-                            if (0 < position.z())
+                            if (0 < cont_tip.Pos().Z())
                             {
                                 // no ID!
+                                continue;
                             }
                             else
                             {
-                                taxelId = 1;
+                                taxelId_tip = 1;
                             }
                         }
-                        else if (ymin < position.y() < y1)
+                        else if (ymin < cont_tip.Pos().Y() < y1)
                         {
-                            if (0 < position.z())
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                taxelId = 12;
+                                taxelId_tip = 12;
                             }
                             else
                             {
-                                taxelId = 2;
+                                taxelId_tip = 2;
                             }
                         }
                     }
                     // calculate taxel IDs 3, 4, 10 & 11:
-                    else if (x1 < position.x() < x2)
+                    else if (x1 < cont_tip.Pos().X() < x2)
                     {
-                        if (y1 < position.y() < ymax)
+                        if (y1 < cont_tip.Pos().Y() < ymax)
                         {
-                            if (0 < position.z())
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                taxelId = 11;
+                                taxelId_tip = 11;
                             }
                             else
                             {
-                                taxelId = 3;
+                                taxelId_tip = 3;
                             }
                         }
-                        else if (ymin < position.y() < y1)
+                        else if (ymin < cont_tip.Pos().Y() < y1)
                         {
-                            if (0 < position.z())
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                taxelId = 10;
+                                taxelId_tip = 10;
                             }
                             else
                             {
-                                taxelId = 4;
+                                taxelId_tip = 4;
                             }
                         }
                     }
                     // calculate taxel IDs 5, 6, 8 & 9:
-                    else if (x2 < position.x() < x3)
+                    else if (x2 < cont_tip.Pos().X() < x3)
                     {
-                        if (y1 < position.y() < ymax)
+                        if (y1 < cont_tip.Pos().Y() < ymax)
                         {
-                            if (0 < position.z())
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                taxelId = 9;
+                                taxelId_tip = 9;
                             }
                             else
                             {
-                                taxelId = 5;
+                                taxelId_tip = 5;
                             }
                         }
-                        else if (ymin < position.y() < y1)
+                        else if (ymin < cont_tip.Pos().Y() < y1)
                         {
-                            if (0 < position.z())
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                taxelId = 8;
+                                taxelId_tip = 8;
                             }
                             else
                             {
-                                taxelId = 6;
+                                taxelId_tip = 6;
                             }
                     }
                     // calculate taxel ID 7:
-                    else if (x3 < position.x() & -ytop < position.y() < ytop )
+                    else if (x3 < cont_tip.Pos().X() & -ytop < cont_tip.Pos().Y() < ytop )
                     {
-                        taxelID = 7;
+                        taxelId_tip = 7;
                     }
                 }
                 else
                 {
                     // figure out set up for left hand!!!
                 }
-                */
 
 		// Find the vector from the center of the root frame of the robot
 		// to the contact points expressed in the root frame of the robot
@@ -602,8 +610,8 @@ void GazeboYarpSkin::OnWorldUpdate()
 		// Set the right taxel id depending on the finger
 		// involved in the contact
 		std::vector<unsigned int> taxelIds;
-		taxelIds.push_back(sensor.taxelId);
-		skinContact.setTaxelList(taxelIds);
+        taxelIds.push_back(sensor.taxelId + taxelId_tip -1);
+        skinContact.setTaxelList(taxelIds);
 
 		// Add contact to the list
 		skinContactList.push_back(skinContact);
@@ -616,4 +624,5 @@ void GazeboYarpSkin::OnWorldUpdate()
 	m_portSkin.write();
 }
     
+}
 }
