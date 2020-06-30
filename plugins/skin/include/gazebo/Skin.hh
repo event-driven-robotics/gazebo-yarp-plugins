@@ -242,6 +242,21 @@ namespace gazebo
 	 *
 	 */	
 	void OnWorldUpdate();
+
+    /**
+      * Set up the parameter for the taxel placement
+      * used to calc the taxel ID
+      */
+    double r = 0.007;                         // 7 mm
+    double xoff = 0.005;                      // 5 mm offset to the link frame origin
+    double x1 = xoff + 0.0055;                // 5.5 mm
+    double x2 = xoff + 0.011;                 // 11 mm
+    double x3 = x2 + r*cos(22.5*M_PI/180);    // in mm and rad
+    double ymin = r * sin(18*M_PI/180);       // in mm and rad
+    double y1 = r * sin(54*M_PI/180);         // in mm and rad
+    double ymax = r;                          // in mm
+    double ytop = r * sin(22.5*M_PI/180);     // in mm and rad
+    double ztop = (r * cos(22.5*M_PI/180))/2; // in mm and rad
     };
 }
 
