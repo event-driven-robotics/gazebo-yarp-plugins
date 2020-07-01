@@ -494,165 +494,140 @@ void GazeboYarpSkin::OnWorldUpdate()
                     // calculate taxel ID 7:
                     if (x3 < cont_tip.Pos().X())
                     {
-                        if ( -ytop < cont_tip.Pos().Y())
+                        if ( -ytop < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ytop)
                         {
-                             if (cont_tip.Pos().Y() < ytop)
+                             if (-ztop < cont_tip.Pos().Z() && cont_tip.Pos().Z() < ztop)
                              {
-                                 if (-ztop < cont_tip.Pos().Z())
-                                 {
-                                     if (cont_tip.Pos().Z() < ztop)
-                                     {
-                                         // std::cout << "x3 < x_cont & -ytop < y_cont < ytop" << std::endl;
-                                         taxelId_tip = 7;
-                                         // std::cout << "7" << std::endl;
-                                         publish_data = true;
-                                     }
-                                 }
+                                 // std::cout << "x3 < x_cont & -ytop < y_cont < ytop" << std::endl;
+                                 taxelId_tip = 7;
+                                 // std::cout << "7" << std::endl;
+                                 publish_data = true;
                              }
                         }
-
                     }
 
                     // calculate taxel IDs 5, 6, 8 & 9:
-                    else if (x2 < cont_tip.Pos().X())
+                    else if (x2 < cont_tip.Pos().X() && cont_tip.Pos().X() < x3)
                     {
                         // std::cout << "x2 < x_cont < x3" << std::endl;
-                        if (y1 < cont_tip.Pos().Y())
+                        if (y1 < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ymax)
                         {
-                            if (cont_tip.Pos().Y() < ymax)
+                            // std::cout << "y1 < y_cont < ymax" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "y1 < y_cont < ymax" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 9;
-                                    // std::cout << "9" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 5;
-                                    // std::cout << "5" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 9;
+                                // std::cout << "9" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 5;
+                                // std::cout << "5" << std::endl;
+                                publish_data = true;
                             }
                         }
-                        else if (ymin < cont_tip.Pos().Y())
+                        else if (ymin < cont_tip.Pos().Y() && cont_tip.Pos().Y() < y1)
                         {
-                            if (cont_tip.Pos().Y() < y1)
+                            // std::cout << "ymin < y_cont < y1" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "ymin < y_cont < y1" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 8;
-                                    // std::cout << "8" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 6;
-                                    // std::cout << "6" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 8;
+                                // std::cout << "8" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 6;
+                                // std::cout << "6" << std::endl;
+                                publish_data = true;
                             }
                         }
                     }
 
                     // calculate taxel IDs 3, 4, 10 & 11:
-                    else if (x1 < cont_tip.Pos().X())
+                    else if (x1 < cont_tip.Pos().X() && cont_tip.Pos().X() < x2)
                     {
                         // std::cout << "x1 < x_cont < x2" << std::endl;
-                        if (y1 < cont_tip.Pos().Y())
+                        if (y1 < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ymax)
                         {
-                            if (cont_tip.Pos().Y() < ymax)
+                            // std::cout << "y1 < y_cont < ymax" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "y1 < y_cont < ymax" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 11;
-                                    // std::cout << "11" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 3;
-                                    // std::cout << "3" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 11;
+                                // std::cout << "11" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 3;
+                                // std::cout << "3" << std::endl;
+                                publish_data = true;
                             }
                         }
-                        else if (ymin < cont_tip.Pos().Y())
+                        else if (ymin < cont_tip.Pos().Y() && cont_tip.Pos().Y() < y1)
                         {
-                            if (cont_tip.Pos().Y() < y1)
+                            // std::cout << "ymin < y_cont < y1" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "ymin < y_cont < y1" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 10;
-                                    // std::cout << "10" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 4;
-                                    // std::cout << "4" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 10;
+                                // std::cout << "10" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 4;
+                                // std::cout << "4" << std::endl;
+                                publish_data = true;
                             }
                         }
                     }
 
                     // calculate taxel IDs 1, 2 & 12:
-                    else if (xoff < cont_tip.Pos().X())
+                    else if (xoff < cont_tip.Pos().X() && cont_tip.Pos().X() < x1)
                     {
                         // std::cout << "xoff < x_cont < x1" << std::endl;
-                        if (y1 < cont_tip.Pos().Y())
+                        if (y1 < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ymax)
                         {
-                            if (cont_tip.Pos().Y() < ymax)
+                            // std::cout << "y1 < y_cont < ymax" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "y1 < y_cont < ymax" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    // no ID!
-                                    // std::cout << "no ID" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 1;
-                                    // std::cout << "1" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                // no ID!
+                                // std::cout << "no ID" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 1;
+                                // std::cout << "1" << std::endl;
+                                publish_data = true;
                             }
                         }
-                        else if (ymin < cont_tip.Pos().Y())
+                        else if (ymin < cont_tip.Pos().Y() && cont_tip.Pos().Y() < y1)
                         {
-                            if (cont_tip.Pos().Y() < y1)
+                            // std::cout << "ymin < y_cont < y1" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "ymin < y_cont < y1" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 12;
-                                    // std::cout << "12" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 2;
-                                    // std::cout << "2" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 12;
+                                // std::cout << "12" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 2;
+                                // std::cout << "2" << std::endl;
+                                publish_data = true;
                             }
                         }
                     }
@@ -665,165 +640,141 @@ void GazeboYarpSkin::OnWorldUpdate()
                     // calculate taxel ID 7:
                     if (x3 < cont_tip.Pos().X())
                     {
-                        if ( -ytop < cont_tip.Pos().Y())
+                        if ( -ytop < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ytop)
                         {
-                             if (cont_tip.Pos().Y() < ytop)
+                             if (-ztop < cont_tip.Pos().Z() && cont_tip.Pos().Z() < ztop)
                              {
-                                 if (-ztop < cont_tip.Pos().Z())
-                                 {
-                                     if (cont_tip.Pos().Z() < ztop)
-                                     {
-                                         // std::cout << "x3 < x_cont & -ytop < y_cont < ytop" << std::endl;
-                                         taxelId_tip = 7;
-                                         // std::cout << "7" << std::endl;
-                                         publish_data = true;
-                                     }
-                                 }
+                                 // std::cout << "x3 < x_cont & -ytop < y_cont < ytop" << std::endl;
+                                 taxelId_tip = 7;
+                                 // std::cout << "7" << std::endl;
+                                 publish_data = true;
                              }
                         }
 
                     }
 
                     // calculate taxel IDs 5, 6, 8 & 9:
-                    else if (x2 < cont_tip.Pos().X())
+                    else if (x2 < cont_tip.Pos().X() && cont_tip.Pos().X() < x3)
                     {
                         // std::cout << "x2 < x_cont < x3" << std::endl;
-                        if (y1 < cont_tip.Pos().Y())
+                        if (y1 < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ymax)
                         {
-                            if (cont_tip.Pos().Y() < ymax)
+                            // std::cout << "y1 < y_cont < ymax" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "y1 < y_cont < ymax" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 5;
-                                    // std::cout << "5" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 9;
-                                    // std::cout << "9" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 5;
+                                // std::cout << "5" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 9;
+                                // std::cout << "9" << std::endl;
+                                publish_data = true;
                             }
                         }
-                        else if (ymin < cont_tip.Pos().Y())
+                        else if (ymin < cont_tip.Pos().Y() && cont_tip.Pos().Y() < y1)
                         {
-                            if (cont_tip.Pos().Y() < y1)
+                            // std::cout << "ymin < y_cont < y1" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "ymin < y_cont < y1" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 6;
-                                    // std::cout << "6" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 8;
-                                    // std::cout << "8" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 6;
+                                // std::cout << "6" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 8;
+                                // std::cout << "8" << std::endl;
+                                publish_data = true;
                             }
                         }
                     }
 
                     // calculate taxel IDs 3, 4, 10 & 11:
-                    else if (x1 < cont_tip.Pos().X())
+                    else if (x1 < cont_tip.Pos().X() && cont_tip.Pos().X() < x2)
                     {
                         // std::cout << "x1 < x_cont < x2" << std::endl;
-                        if (y1 < cont_tip.Pos().Y())
+                        if (y1 < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ymax)
                         {
-                            if (cont_tip.Pos().Y() < ymax)
+                            // std::cout << "y1 < y_cont < ymax" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "y1 < y_cont < ymax" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 3;
-                                    // std::cout << "3" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 11;
-                                    // std::cout << "11" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 3;
+                                // std::cout << "3" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 11;
+                                // std::cout << "11" << std::endl;
+                                publish_data = true;
                             }
                         }
-                        else if (ymin < cont_tip.Pos().Y())
+                        else if (ymin < cont_tip.Pos().Y() && cont_tip.Pos().Y() < y1)
                         {
-                            if (cont_tip.Pos().Y() < y1)
+                            // std::cout << "ymin < y_cont < y1" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "ymin < y_cont < y1" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 4;
-                                    // std::cout << "4" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 10;
-                                    // std::cout << "10" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 4;
+                                // std::cout << "4" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 10;
+                                // std::cout << "10" << std::endl;
+                                publish_data = true;
                             }
                         }
                     }
 
                     // calculate taxel IDs 1, 2 & 12:
-                    else if (xoff < cont_tip.Pos().X())
+                    else if (xoff < cont_tip.Pos().X() && cont_tip.Pos().X() < x1)
                     {
                         // std::cout << "xoff < x_cont < x1" << std::endl;
-                        if (y1 < cont_tip.Pos().Y())
+                        if (y1 < cont_tip.Pos().Y() && cont_tip.Pos().Y() < ymax)
                         {
-                            if (cont_tip.Pos().Y() < ymax)
+                            // std::cout << "y1 < y_cont < ymax" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "y1 < y_cont < ymax" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 1;
-                                    // std::cout << "1" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    // no ID!
-                                    // std::cout << "no ID" << std::endl;
-                                    continue;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 1;
+                                // std::cout << "1" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                // no ID!
+                                // std::cout << "no ID" << std::endl;
+                                continue;
                             }
                         }
-                        else if (ymin < cont_tip.Pos().Y())
+                        else if (ymin < cont_tip.Pos().Y() && cont_tip.Pos().Y() < y1)
                         {
-                            if (cont_tip.Pos().Y() < y1)
+                            // std::cout << "ymin < y_cont < y1" << std::endl;
+                            if (0 < cont_tip.Pos().Z())
                             {
-                                // std::cout << "ymin < y_cont < y1" << std::endl;
-                                if (0 < cont_tip.Pos().Z())
-                                {
-                                    // std::cout << "0 < z_cont" << std::endl;
-                                    taxelId_tip = 2;
-                                    // std::cout << "2" << std::endl;
-                                    publish_data = true;
-                                }
-                                else if (cont_tip.Pos().Z() < 0)
-                                {
-                                    // std::cout << "z_cont < 0" << std::endl;
-                                    taxelId_tip = 12;
-                                    // std::cout << "12" << std::endl;
-                                    publish_data = true;
-                                }
+                                // std::cout << "0 < z_cont" << std::endl;
+                                taxelId_tip = 2;
+                                // std::cout << "2" << std::endl;
+                                publish_data = true;
+                            }
+                            else if (cont_tip.Pos().Z() < 0)
+                            {
+                                // std::cout << "z_cont < 0" << std::endl;
+                                taxelId_tip = 12;
+                                // std::cout << "12" << std::endl;
+                                publish_data = true;
                             }
                         }
                     }
